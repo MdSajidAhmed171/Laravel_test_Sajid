@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantPrice;
 use App\Models\Variant;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -17,7 +18,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+        $products  = Product::all();
+        return view('products.index',compact("products"));
     }
 
     /**
@@ -62,8 +64,14 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $variants = Variant::all();
-        return view('products.edit', compact('variants'));
+        // return $product;
+        $product_id = $product->id;
+        return view('products.edit',[
+            'variants'=> Variant::all(),
+            'product'=> $product,
+            'product_varients' => ProductVariant::where('product_id',$product_id)->get(),
+            'product_prices' => ProductVariantPrice::where('product_id',$product_id)->get()
+        ]);
     }
 
     /**
@@ -73,9 +81,9 @@ class ProductController extends Controller
      * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request)
     {
-        //
+        return $request->all();
     }
 
     /**
